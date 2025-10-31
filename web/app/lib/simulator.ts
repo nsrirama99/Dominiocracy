@@ -213,8 +213,18 @@ export async function runFullSimulation(
 	initialUnits: Unit[],
 	onTickUpdate?: (state: SimulationState, tick: number) => void
 ): Promise<SimulationState> {
+	// Deep copy units to avoid mutating original state
 	let state: SimulationState = {
-		units: initialUnits.map(u => ({ ...u })), // Deep copy
+		units: initialUnits.map(u => ({
+			...u,
+			stats: { ...u.stats },
+			state: { ...u.state, position: { ...u.state.position } },
+			quirks: [...u.quirks],
+			currentIntent: u.currentIntent ? { 
+				...u.currentIntent,
+				targetPosition: { ...u.currentIntent.targetPosition }
+			} : undefined
+		})),
 		events: []
 	};
 

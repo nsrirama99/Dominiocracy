@@ -109,14 +109,17 @@ export default function Billboard3DDemo({
           .map((unit) => {
             const hasFireQuirk = unit.quirks.includes("fire-enthusiast");
             const hasCoffeeQuirk = unit.quirks.includes("coffee-curious");
+            const isLowHealth = unit.state.health < 30;
 
             return (
               <div
                 key={unit.id}
-                className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-transform hover:scale-110"
+                className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all duration-300 hover:scale-110 hover:z-10"
                 style={{
                   left: `${(unit.state.position.x / 600) * 100}%`,
                   top: `${(unit.state.position.y / 400) * 100}%`,
+                  transition:
+                    "left 0.5s ease-out, top 0.5s ease-out, transform 0.2s",
                 }}
                 onMouseEnter={() => setHoveredUnit(unit.id)}
                 onMouseLeave={() => setHoveredUnit(null)}
@@ -129,7 +132,9 @@ export default function Billboard3DDemo({
               >
                 <div className="relative">
                   <div
-                    className="w-12 h-16 rounded-lg shadow-lg flex items-center justify-center text-2xl relative overflow-hidden"
+                    className={`w-12 h-16 rounded-lg shadow-lg flex items-center justify-center text-2xl relative overflow-hidden transition-all duration-300 ${
+                      isLowHealth ? "animate-pulse" : ""
+                    }`}
                     style={{
                       background: `linear-gradient(135deg, ${getClassColor(
                         unit.class
@@ -141,20 +146,32 @@ export default function Billboard3DDemo({
                               unit.playerId === 1 ? "#3b82f6" : "#ef4444"
                             }`,
                       opacity: unit.state.health < 30 ? 0.6 : 1,
+                      boxShadow:
+                        hoveredUnit === unit.id
+                          ? "0 0 20px rgba(255,255,255,0.5)"
+                          : "none",
                     }}
                   >
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/10 to-transparent" />
                     <span className="relative z-10">👤</span>
+
+                    {/* Damage flash effect */}
+                    {isLowHealth && (
+                      <div className="absolute inset-0 bg-red-500 animate-ping opacity-20" />
+                    )}
                   </div>
 
                   {showHealthBars && (
-                    <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-14 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+                    <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-14 h-1.5 bg-gray-700 rounded-full overflow-hidden border border-zinc-600 shadow-md">
                       <div
-                        className="h-full bg-gradient-to-r from-red-500 to-green-500 transition-all"
+                        className="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 transition-all duration-500"
                         style={{
                           width: `${
                             (unit.state.health / unit.state.maxHealth) * 100
                           }%`,
+                          filter: isLowHealth
+                            ? "brightness(0.7) saturate(2)"
+                            : "none",
                         }}
                       />
                     </div>
@@ -193,7 +210,8 @@ export default function Billboard3DDemo({
                     </div>
                     {unit.currentIntent && (
                       <div className="text-[10px] text-purple-600 mt-1 italic">
-                        "{unit.currentIntent.interpretation.slice(0, 40)}..."
+                        &ldquo;{unit.currentIntent.interpretation.slice(0, 40)}
+                        ...&rdquo;
                       </div>
                     )}
                     <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-white rotate-45" />
