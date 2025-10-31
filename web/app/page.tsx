@@ -10,7 +10,7 @@ import { GameProvider, useGame } from "./game/GameContext";
 import { generateUnitPool } from "./lib/unitGenerator";
 import { runFullSimulation, type BattleEvent } from "./lib/simulator";
 import { calculateScore, determineWinner, checkRoundEnd } from "./lib/scoring";
-import type { Unit, Intent } from "./types/unit";
+import type { Unit, Intent, Player } from "./types/unit";
 
 function HomeInner() {
   const game = useGame();
@@ -167,7 +167,7 @@ function HomeInner() {
 
     if (p1Submitted && p2Submitted) {
       console.log("✅ Both players submitted! Starting interpretation...");
-      interpretOrders();
+      interpretOrders(playersPredicted);
     } else {
       console.log("⏳ Waiting for other player. Switching turn...");
       const nextPlayer = game.state.currentPlayerId === 1 ? 2 : 1;
@@ -187,12 +187,13 @@ function HomeInner() {
   };
 
   // Interpret orders using Gemini
-  const interpretOrders = async () => {
+  const interpretOrders = async (predictedPlayers?: Player[]) => {
     setIsProcessing(true);
     game.setPhase("interpretation");
 
     console.log("🎯 INTERPRETATION PHASE START");
-    console.log("Players:", game.state.players);
+    const playersList = predictedPlayers ?? game.state.players;
+    console.log("Players:", playersList);
     console.log(
       "Units:",
       game.state.units.map((u) => ({
@@ -217,7 +218,7 @@ function HomeInner() {
       // Interpret for each player
       for (let playerId of [1, 2] as const) {
         console.log(`\n📝 Processing Player ${playerId}`);
-        const player = game.state.players.find((p) => p.id === playerId);
+        const player = playersList.find((p) => p.id === playerId);
         const playerUnits = game.state.units.filter(
           (u) => u.playerId === playerId && u.state.isAlive
         );
