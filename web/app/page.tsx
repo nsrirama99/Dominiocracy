@@ -67,6 +67,48 @@ function HomeInner() {
     }
   };
 
+  // Handle unit creation
+  const handleCreateUnit = (unit: Unit) => {
+    const currentPlayerId = game.state.currentPlayerId;
+    if (currentPlayerId === 1) {
+      setPlayer1Pool((prev) => [...prev, unit]);
+    } else {
+      setPlayer2Pool((prev) => [...prev, unit]);
+    }
+  };
+
+  // Handle unit update
+  const handleUpdateUnit = (updatedUnit: Unit) => {
+    const currentPlayerId = game.state.currentPlayerId;
+    if (currentPlayerId === 1) {
+      setPlayer1Pool((prev) =>
+        prev.map((u) => (u.id === updatedUnit.id ? updatedUnit : u))
+      );
+      setPlayer1Selected((prev) =>
+        prev.map((u) => (u.id === updatedUnit.id ? updatedUnit : u))
+      );
+    } else {
+      setPlayer2Pool((prev) =>
+        prev.map((u) => (u.id === updatedUnit.id ? updatedUnit : u))
+      );
+      setPlayer2Selected((prev) =>
+        prev.map((u) => (u.id === updatedUnit.id ? updatedUnit : u))
+      );
+    }
+  };
+
+  // Handle unit deletion
+  const handleDeleteUnit = (unitId: number) => {
+    const currentPlayerId = game.state.currentPlayerId;
+    if (currentPlayerId === 1) {
+      setPlayer1Pool((prev) => prev.filter((u) => u.id !== unitId));
+      setPlayer1Selected((prev) => prev.filter((u) => u.id !== unitId));
+    } else {
+      setPlayer2Pool((prev) => prev.filter((u) => u.id !== unitId));
+      setPlayer2Selected((prev) => prev.filter((u) => u.id !== unitId));
+    }
+  };
+
   // Handle order submission
   const handleOrderSubmit = async (draft: OrderDraft) => {
     const currentPlayer = game.state.players.find(
@@ -495,6 +537,9 @@ function HomeInner() {
                 setPlayer1Selected((prev) => prev.filter((u) => u.id !== id))
               }
               onConfirm={handleDraftConfirm}
+              onUpdateUnit={handleUpdateUnit}
+              onCreateUnit={handleCreateUnit}
+              onDeleteUnit={handleDeleteUnit}
               currentPlayer={1}
               maxUnits={6}
             />
@@ -508,6 +553,9 @@ function HomeInner() {
                 setPlayer2Selected((prev) => prev.filter((u) => u.id !== id))
               }
               onConfirm={handleDraftConfirm}
+              onUpdateUnit={handleUpdateUnit}
+              onCreateUnit={handleCreateUnit}
+              onDeleteUnit={handleDeleteUnit}
               currentPlayer={2}
               maxUnits={6}
             />
