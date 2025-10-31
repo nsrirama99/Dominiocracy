@@ -1,5 +1,18 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { Camera, Flame, Coffee, MessageCircle } from 'lucide-react';
+// elp me visulally see this opiton:
+// * Go with #3 (Billboard 3D):
+//    * 1 low-poly terrain glTF,
+//    * Units as face-cards (planes) + class props,
+//    * Coffee/fire FX as simple sprites,
+//    * Speech bubbles as HTML overlays.
+// If you want, I can drop a tiny Next.js starter with:
+// * ThreeCanvas component (camera + lights + terrain loader)
+// * BillboardUnit util
+// * FaceAtlas builder (packs headshots into one texture)
+// * Example “coffee aura” + “fire” effects
+// Say the word and I’ll scaffold the file tree and core
+
+import React, { useRef, useEffect, useState } from "react";
+import { Camera, Flame, Coffee, MessageCircle } from "lucide-react";
 
 export default function Billboard3DDemo() {
   const canvasRef = useRef(null);
@@ -8,23 +21,63 @@ export default function Billboard3DDemo() {
 
   // Simulated units with positions
   const units = [
-    { id: 1, name: 'Knight', x: 150, y: 200, class: 'warrior', hasFire: true, hasCoffee: false },
-    { id: 2, name: 'Mage', x: 300, y: 180, class: 'mage', hasFire: false, hasCoffee: true },
-    { id: 3, name: 'Archer', x: 450, y: 220, class: 'ranger', hasFire: false, hasCoffee: false },
-    { id: 4, name: 'Healer', x: 250, y: 300, class: 'cleric', hasFire: false, hasCoffee: true },
-    { id: 5, name: 'Rogue', x: 400, y: 320, class: 'rogue', hasFire: true, hasCoffee: false },
+    {
+      id: 1,
+      name: "Knight",
+      x: 150,
+      y: 200,
+      class: "warrior",
+      hasFire: true,
+      hasCoffee: false,
+    },
+    {
+      id: 2,
+      name: "Mage",
+      x: 300,
+      y: 180,
+      class: "mage",
+      hasFire: false,
+      hasCoffee: true,
+    },
+    {
+      id: 3,
+      name: "Archer",
+      x: 450,
+      y: 220,
+      class: "ranger",
+      hasFire: false,
+      hasCoffee: false,
+    },
+    {
+      id: 4,
+      name: "Healer",
+      x: 250,
+      y: 300,
+      class: "cleric",
+      hasFire: false,
+      hasCoffee: true,
+    },
+    {
+      id: 5,
+      name: "Rogue",
+      x: 400,
+      y: 320,
+      class: "rogue",
+      hasFire: true,
+      hasCoffee: false,
+    },
   ];
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    
+    const ctx = canvas.getContext("2d");
+
     // Draw terrain (low-poly style)
-    ctx.fillStyle = '#2d5016';
+    ctx.fillStyle = "#2d5016";
     ctx.fillRect(0, 0, 600, 400);
-    
+
     // Draw some low-poly terrain features
-    ctx.fillStyle = '#3d6026';
+    ctx.fillStyle = "#3d6026";
     ctx.beginPath();
     ctx.moveTo(0, 250);
     ctx.lineTo(150, 220);
@@ -34,8 +87,8 @@ export default function Billboard3DDemo() {
     ctx.lineTo(600, 400);
     ctx.lineTo(0, 400);
     ctx.fill();
-    
-    ctx.fillStyle = '#4d7036';
+
+    ctx.fillStyle = "#4d7036";
     ctx.beginPath();
     ctx.moveTo(0, 280);
     ctx.lineTo(200, 260);
@@ -46,7 +99,7 @@ export default function Billboard3DDemo() {
     ctx.fill();
 
     // Draw grid lines for low-poly feel
-    ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+    ctx.strokeStyle = "rgba(0,0,0,0.1)";
     ctx.lineWidth = 1;
     for (let i = 0; i < 600; i += 50) {
       ctx.beginPath();
@@ -64,32 +117,30 @@ export default function Billboard3DDemo() {
 
   const getClassColor = (className) => {
     const colors = {
-      warrior: '#c53030',
-      mage: '#3182ce',
-      ranger: '#38a169',
-      cleric: '#d69e2e',
-      rogue: '#805ad5'
+      warrior: "#c53030",
+      mage: "#3182ce",
+      ranger: "#38a169",
+      cleric: "#d69e2e",
+      rogue: "#805ad5",
     };
-    return colors[className] || '#718096';
+    return colors[className] || "#718096";
   };
 
   return (
     <div className="w-full max-w-4xl mx-auto p-6 bg-gray-900 rounded-lg">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-white mb-2">Billboard 3D Visualization</h2>
+        <h2 className="text-2xl font-bold text-white mb-2">
+          Billboard 3D Visualization
+        </h2>
         <p className="text-gray-300 text-sm">
-          Interactive demo showing the architecture: Low-poly terrain + Face-card units + Sprite FX + HTML overlays
+          Interactive demo showing the architecture: Low-poly terrain +
+          Face-card units + Sprite FX + HTML overlays
         </p>
       </div>
 
       <div className="relative bg-gray-800 rounded-lg overflow-hidden shadow-2xl">
         {/* Canvas for terrain */}
-        <canvas 
-          ref={canvasRef} 
-          width={600} 
-          height={400}
-          className="w-full"
-        />
+        <canvas ref={canvasRef} width={600} height={400} className="w-full" />
 
         {/* Billboard Units (face-cards as planes) */}
         {units.map((unit) => (
@@ -102,15 +153,22 @@ export default function Billboard3DDemo() {
             }}
             onMouseEnter={() => setHoveredUnit(unit.id)}
             onMouseLeave={() => setHoveredUnit(null)}
-            onClick={() => setSelectedUnit(unit.id === selectedUnit ? null : unit.id)}
+            onClick={() =>
+              setSelectedUnit(unit.id === selectedUnit ? null : unit.id)
+            }
           >
             {/* Face card plane */}
             <div className="relative">
-              <div 
+              <div
                 className="w-12 h-16 rounded-lg shadow-lg flex items-center justify-center text-2xl relative overflow-hidden"
                 style={{
-                  background: `linear-gradient(135deg, ${getClassColor(unit.class)}, ${getClassColor(unit.class)}dd)`,
-                  border: hoveredUnit === unit.id ? '3px solid white' : '2px solid rgba(255,255,255,0.3)',
+                  background: `linear-gradient(135deg, ${getClassColor(
+                    unit.class
+                  )}, ${getClassColor(unit.class)}dd)`,
+                  border:
+                    hoveredUnit === unit.id
+                      ? "3px solid white"
+                      : "2px solid rgba(255,255,255,0.3)",
                 }}
               >
                 {/* Simulated face texture */}
@@ -126,14 +184,20 @@ export default function Billboard3DDemo() {
               {/* Fire FX sprite */}
               {unit.hasFire && (
                 <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-                  <Flame className="w-6 h-6 text-orange-500 drop-shadow-lg" fill="currentColor" />
+                  <Flame
+                    className="w-6 h-6 text-orange-500 drop-shadow-lg"
+                    fill="currentColor"
+                  />
                 </div>
               )}
 
               {/* Coffee FX sprite */}
               {unit.hasCoffee && (
                 <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 animate-pulse">
-                  <Coffee className="w-5 h-5 text-amber-700 drop-shadow-lg" fill="currentColor" />
+                  <Coffee
+                    className="w-5 h-5 text-amber-700 drop-shadow-lg"
+                    fill="currentColor"
+                  />
                 </div>
               )}
             </div>
@@ -141,7 +205,9 @@ export default function Billboard3DDemo() {
             {/* HTML overlay - Speech bubble */}
             {selectedUnit === unit.id && (
               <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-white rounded-lg px-3 py-2 shadow-xl whitespace-nowrap animate-in fade-in slide-in-from-bottom-2 duration-200">
-                <div className="text-xs font-semibold text-gray-800">{unit.name}</div>
+                <div className="text-xs font-semibold text-gray-800">
+                  {unit.name}
+                </div>
                 <div className="text-xs text-gray-600">Ready for action!</div>
                 <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-white rotate-45" />
               </div>
@@ -168,20 +234,26 @@ export default function Billboard3DDemo() {
         <div className="bg-gray-800 rounded-lg p-4">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-3 h-3 rounded-full bg-green-500" />
-            <h3 className="text-white font-semibold text-sm">Low-Poly Terrain</h3>
+            <h3 className="text-white font-semibold text-sm">
+              Low-Poly Terrain
+            </h3>
           </div>
           <p className="text-gray-400 text-xs">
-            Single glTF file with simple geometry. Rendered as base layer in Three.js scene.
+            Single glTF file with simple geometry. Rendered as base layer in
+            Three.js scene.
           </p>
         </div>
 
         <div className="bg-gray-800 rounded-lg p-4">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-3 h-3 rounded-full bg-blue-500" />
-            <h3 className="text-white font-semibold text-sm">Billboard Units</h3>
+            <h3 className="text-white font-semibold text-sm">
+              Billboard Units
+            </h3>
           </div>
           <p className="text-gray-400 text-xs">
-            Face-card planes that always face camera. Uses texture atlas for efficiency.
+            Face-card planes that always face camera. Uses texture atlas for
+            efficiency.
           </p>
         </div>
 
@@ -191,7 +263,8 @@ export default function Billboard3DDemo() {
             <h3 className="text-white font-semibold text-sm">Sprite FX</h3>
           </div>
           <p className="text-gray-400 text-xs">
-            Simple animated sprites (fire, coffee aura) as textured planes above units.
+            Simple animated sprites (fire, coffee aura) as textured planes above
+            units.
           </p>
         </div>
 
@@ -210,25 +283,48 @@ export default function Billboard3DDemo() {
         <div className="flex items-start gap-3">
           <MessageCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
           <div>
-            <h4 className="text-blue-300 font-semibold text-sm mb-1">How it works:</h4>
+            <h4 className="text-blue-300 font-semibold text-sm mb-1">
+              How it works:
+            </h4>
             <ul className="text-blue-200 text-xs space-y-1">
-              <li>• <strong>Hover</strong> over units to see names</li>
-              <li>• <strong>Click</strong> units to toggle speech bubbles (HTML overlays)</li>
+              <li>
+                • <strong>Hover</strong> over units to see names
+              </li>
+              <li>
+                • <strong>Click</strong> units to toggle speech bubbles (HTML
+                overlays)
+              </li>
               <li>• Fire and coffee icons are sprite FX</li>
               <li>• Class badges are props attached to billboards</li>
-              <li>• All units are flat planes that would face the camera in 3D</li>
+              <li>
+                • All units are flat planes that would face the camera in 3D
+              </li>
             </ul>
           </div>
         </div>
       </div>
 
       <div className="mt-4 bg-gray-800 rounded-lg p-4">
-        <h3 className="text-white font-semibold text-sm mb-2">Next.js Starter Components:</h3>
+        <h3 className="text-white font-semibold text-sm mb-2">
+          Next.js Starter Components:
+        </h3>
         <div className="text-xs text-gray-300 space-y-1 font-mono">
-          <div>📦 <span className="text-green-400">ThreeCanvas</span> - Camera + lights + terrain loader</div>
-          <div>📦 <span className="text-blue-400">BillboardUnit</span> - Face-card rendering utility</div>
-          <div>📦 <span className="text-purple-400">FaceAtlas</span> - Texture atlas builder for headshots</div>
-          <div>📦 <span className="text-orange-400">SpriteFX</span> - Coffee aura + fire effects</div>
+          <div>
+            📦 <span className="text-green-400">ThreeCanvas</span> - Camera +
+            lights + terrain loader
+          </div>
+          <div>
+            📦 <span className="text-blue-400">BillboardUnit</span> - Face-card
+            rendering utility
+          </div>
+          <div>
+            📦 <span className="text-purple-400">FaceAtlas</span> - Texture
+            atlas builder for headshots
+          </div>
+          <div>
+            📦 <span className="text-orange-400">SpriteFX</span> - Coffee aura +
+            fire effects
+          </div>
         </div>
       </div>
     </div>
