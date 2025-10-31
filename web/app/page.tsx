@@ -140,13 +140,13 @@ function HomeInner() {
 				});
 
 				// Show interpretation outcomes
-				intents.slice(0, 3).forEach(intent => {
+                intents.slice(0, 3).forEach(intent => {
 					setOutcomes(prev => [{
 						id: `intent-${intent.unitId}-${Date.now()}`,
 						icon: "💭",
 						title: `Unit ${intent.unitId} interpretation`,
-						quote: intent.interpretation,
-						tags: [intent.action]
+                        quote: intent.interpretation,
+                        tags: [intent.action, `P${playerId}`]
 					}, ...prev]);
 				});
 			}
@@ -190,14 +190,15 @@ function HomeInner() {
 				game.setResolutionTick(tick);
 
 				// Show some events
-				const tickEvents = state.events.filter(e => e.tick === tick);
-				tickEvents.slice(0, 2).forEach(event => {
+                const tickEvents = state.events.filter(e => e.tick === tick);
+                tickEvents.slice(0, 2).forEach(event => {
+                    const unitOwner = state.units.find(u => u.id === event.unitId)?.playerId;
 					setOutcomes(prev => [{
 						id: `event-${event.unitId}-${tick}-${Date.now()}`,
 						icon: event.type === "death" ? "💀" : event.type === "attack" ? "⚔️" : "📍",
 						title: `Tick ${tick + 1}`,
 						quote: event.message,
-						tags: [event.type]
+                        tags: unitOwner ? [event.type, `P${unitOwner}`] : [event.type]
 					}, ...prev]);
 				});
 			}
