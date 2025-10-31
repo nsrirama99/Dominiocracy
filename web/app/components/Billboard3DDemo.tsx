@@ -13,7 +13,14 @@ type Unit = {
 	hasCoffee: boolean;
 };
 
-export default function Billboard3DDemo() {
+export type MapClick = { x: number; y: number };
+
+type Props = {
+	onMapClick?: (pos: MapClick) => void;
+	onUnitSelect?: (unitId: number) => void;
+};
+
+export default function Billboard3DDemo({ onMapClick, onUnitSelect }: Props) {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 	const [selectedUnit, setSelectedUnit] = useState<number | null>(null);
 	const [hoveredUnit, setHoveredUnit] = useState<number | null>(null);
@@ -93,7 +100,19 @@ export default function Billboard3DDemo() {
 			</div>
 
 			<div className="relative bg-gray-800 rounded-lg overflow-hidden shadow-2xl">
-				<canvas ref={canvasRef} width={600} height={400} className="w-full" />
+				<canvas
+					ref={canvasRef}
+					width={600}
+					height={400}
+					className="w-full"
+					onClick={(e) => {
+						if (!onMapClick) return;
+						const rect = (e.target as HTMLCanvasElement).getBoundingClientRect();
+						const x = Math.round(e.clientX - rect.left);
+						const y = Math.round(e.clientY - rect.top);
+						onMapClick({ x, y });
+					}}
+				/>
 
 				{units.map((unit) => (
 					<div
@@ -102,7 +121,11 @@ export default function Billboard3DDemo() {
 						style={{ left: `${unit.x}px`, top: `${unit.y}px` }}
 						onMouseEnter={() => setHoveredUnit(unit.id)}
 						onMouseLeave={() => setHoveredUnit(null)}
-						onClick={() => setSelectedUnit(unit.id === selectedUnit ? null : unit.id)}
+						onClick={() => {
+							const next = unit.id === selectedUnit ? null : unit.id;
+							setSelectedUnit(next);
+							if (next && onUnitSelect) onUnitSelect(next);
+						}}
 					>
 						<div className="relative">
 							<div
